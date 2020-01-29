@@ -173,7 +173,9 @@ where
                 let secret = match &jwk.algorithm {
                     AlgorithmParameters::RSA(rsa) => rsa.jws_public_key_secret(),
                     AlgorithmParameters::OctetKey(oct) => Secret::Bytes(oct.value.clone()),
-                    AlgorithmParameters::EllipticCurve(_ec) => Secret::PublicKey("asd".as_bytes().to_vec()),
+                    AlgorithmParameters::EllipticCurve(_) => Secret::PublicKey(
+                        jwk.algorithm.octet_key()?.to_vec()
+                    ),
                     _ => Err(ValidationError::UnsupportedKeyAlgorithm)?,
                 };
 
